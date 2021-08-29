@@ -67,12 +67,11 @@ module.exports = {
               .catch(console.error);
           }
         });
+        offset += data.asset_events.length;
       }
       catch (error) {
-        console.error
+        console.error(error)
       }
-
-      offset += data.asset_events.length;
     }
 
     lastTimestamp = newTimestamp;

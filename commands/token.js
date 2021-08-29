@@ -35,11 +35,17 @@ module.exports = {
           return res.json();
         })
         .then((metadata) => {
+            let owner;
+            if (metadata && metadata.owner && metadata.owner.user && metadata.owner.user.username) {
+                owner = metadata.owner.user.username;
+            } else {
+                owner = metadata.owner.address.slice(0,8);
+            }
             const embedMsg = new Discord.MessageEmbed()
               .setColor('#0099ff')
               .setTitle(metadata.name)
               .setURL(metadata.permalink)
-              .addField("Owner", metadata.owner.user?.username || metadata.owner.address.slice(0,8))
+              .addField("Owner",  owner)
               .setImage(metadata.image_url);
 
             metadata.traits.forEach(function(trait){
