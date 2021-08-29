@@ -51,14 +51,28 @@ module.exports = {
               if (salesCache.length > 200) salesCache.shift();
             }
 
+            let owner;
+            if (event && event.seller && event.seller.user && event.seller.user.username) {
+              owner = event.seller.user.username;
+            } else {
+              owner = event.seller.address.slice(0,8);
+            }
+
+            let winner;
+            if (event && event.winner_account && event.winner_account.user && event.winner_account.user.username) {
+              winner = event.winner_account.user.username;
+            } else {
+              winner = event.winner_account.address.slice(0,8);
+            }
+
             const embedMsg = new Discord.MessageEmbed()
               .setColor('#0099ff')
               .setTitle(event.asset.name)
               .setURL(event.asset.permalink)
               .setDescription(`has just been sold for ${event.total_price/(1e18)}\u039E`)
               .setThumbnail(event.asset.image_url)
-              .addField("From", `[${event.seller.user?.username || event.seller.address.slice(0,8)}](https://etherscan.io/address/${event.seller.address})`, true)
-              .addField("To", `[${event.winner_account.user?.username || event.winner_account.address.slice(0,8)}](https://etherscan.io/address/${event.winner_account.address})`, true);
+              .addField("From", `[${owner}](https://etherscan.io/address/${event.seller.address})`, true)
+              .addField("To", `[${winner}](https://etherscan.io/address/${event.winner_account.address})`, true);
 
             client.channels.fetch(process.env.DISCORD_SALES_CHANNEL_ID)
               .then(channel => {
